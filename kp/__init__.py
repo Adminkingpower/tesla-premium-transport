@@ -15,10 +15,11 @@ def create_app():
     Bootstrap(app)
     db.init_app(app)
 
+    # Importa modelos aquí
     from . import models
 
-    @app.before_first_request
-    def create_tables():
+    # 👇 CREA LAS TABLAS AL INICIAR LA APP
+    with app.app_context():
         db.create_all()
 
     from .views import bp as main_bp
