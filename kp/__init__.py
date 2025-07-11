@@ -21,6 +21,10 @@ def create_app():
     from .admin import admin_bp
     app.register_blueprint(admin_bp)
 
+    @app.before_first_request
+    def create_tables():
+        db.create_all()
+
     @app.errorhandler(404)
     def not_found(e):
         return "404 - Page Not Found", 404
