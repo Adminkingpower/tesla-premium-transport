@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="jumbotron text-white banner" style="background-image: url('{{ url_for('static', filename='img/point.png') }}')">
+  <div class="header-content text-lg-right text-center">
+    <h1 class="display-4 font-weight-bold">Elegant Point-to-Point Rides</h1>
+    <a href="#services" class="btn btn-gold-inverse btn-lg mt-3">Request a Ride Now</a>
+  </div>
+</header>
+
+<section class="container my-5" id="services">
+  <div class="text-center">
+    <h2 class="mb-4">Luxury Rides for Every Distance</h2>
+    <p>
+      Whether you're heading to an important meeting, a night out, or simply want to travel with elegance and comfort, 
+      our point-to-point service adapts to your needs. Choose your range, and we’ll take care of the rest—with the class of a Tesla and the excellence of King Power Au.
+    </p>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="row justify-content-center">
+    {% for service in services %}
+      <div class="col-lg-4 col-md-6 mb-4 d-flex align-items-stretch">
+        <div class="card h-100 shadow-sm w-100">
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ service.name }}</h5>
+            <p class="card-text">{{ service.description }}</p>
+            <span class="badge badge-gold mb-2" style="font-size:1.1em;">${{ service.price }}</span>
+            <div class="d-flex justify-content-center gap-2 mt-2">
+              <a href="{{ url_for('main.cart') }}" class="btn btn-gold mr-2">Go to Cart</a>
+              <form action="{{ url_for('main.add_to_cart', service_id=service.id) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-gold-inverse add-to-cart">Add to Cart</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% if other_categories %}
+<div class="container my-5">
+  <h3 class="text-center mb-4">Other Service Categories</h3>
+  <div class="row justify-content-center">
+    {% for category in other_categories %}
+    <div class="col-md-4 d-flex align-items-stretch">
+      <div class="card mb-4 w-100">
+        <img src="{{ url_for('static', filename='img/' ~ category.image) }}" class="card-img-top" alt="{{ category.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ category.name }}</h5>
+          <p class="card-text">{{ category.description }}</p>
+          <a href="{{ url_for('main.' + category.endpoint) }}" class="btn btn-gold-inverse">See Options</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

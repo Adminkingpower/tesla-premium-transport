@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block header %}
+    <header class="jumbotron text-white banner" style="background-image: url('{{ url_for('static', filename='img/car.png') }}'); height: 130px;">
+    </header>
+{% endblock %}
+
+{% block content %}
+
+<section>
+    <div class="container">
+        <div class="row col-12 d-flex mt-2 mb-2">
+            <h3>Your Basket</h3>
+        </div>
+        {% for service in services %}
+        <div class="row shadow-md my-row mb-3 align-items-center">
+            <div class="col-sm-10 card">
+                <h5 class="card-header">
+                    {{ service.name }}
+                </h5>
+                <div class="card-body">
+                    <div class="row">
+                        {% if service.image %}
+                        <div class="col-2">
+                            <img class="img-thumbnail" src="{{ url_for('static', filename='img/' + service.image) }}" alt="{{ service.name }}">
+                        </div>
+                        {% endif %}
+                        <div class="col-10">
+                            <p class="card-text">{{ service.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 text-center">
+                <h5>${{ "%.2f"|format(service.price) }}</h5>
+                <form method="POST" action="{{ url_for('main.remove_from_cart', service_id=service.id) }}">
+                    <button type="submit" class="btn btn-danger mb-3">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12 text-center my-4">
+                <h5>No items in your basket yet.</h5>
+                <a href="{{ url_for('main.home') }}" class="btn btn-gold mt-3">Continue Browsing</a>
+            </div>
+        </div>
+        {% endfor %}
+        <section>
+            <div class="row col-12 d-flex">
+                <h5 class="mt-4">Total = ${{ "%.2f"|format(totalprice) }}</h5>
+            </div>
+            <div class="row col-12 d-flex mt-2 mb-4">
+                <a href="{{ url_for('main.home') }}" class="btn btn-gold mr-4">Services</a>
+                <a href="{{ url_for('main.checkout') }}" class="btn btn-gold-inverse mr-4">Proceed to Checkout</a>
+                <form method="POST" action="{{ url_for('main.clear_cart') }}" style="display:inline;">
+                    <button type="submit" class="btn btn-gold">Empty Basket</button>
+                </form>
+            </div>
+        </section>
+    </div>
+</section>
+{% endblock %}

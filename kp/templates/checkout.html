@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block header %}
+<header class="jumbotron text-white banner" style="background-image: url('{{ url_for('static', filename='img/car.png') }}'); height: 130px;">
+</header>
+{% endblock %}
+
+{% block content %}
+<section class="container my-5">
+  <div class="text-center">
+    <h3 class="mb-4">Complete your request</h3>
+    <p>Please fill out the form below to request your premium Tesla experience.</p>
+    <a href="{{ url_for('main.home') }}" class="btn btn-gold mt-3 mb-4">Back to Home</a>
+  </div>
+  <div class="mb-4">
+    <h5>Your Selected Services:</h5>
+    <ul>
+      {% for service in services %}
+        <li>{{ service.name }} - ${{ "%.2f"|format(service.price) }}</li>
+      {% endfor %}
+    </ul>
+    <p><strong>Total:</strong> ${{ "%.2f"|format(total_price) }}</p>
+  </div>
+  {% if form.errors %}
+  <div class="alert alert-danger">
+    <ul>
+    {% for field, errors in form.errors.items() %}
+      {% for error in errors %}
+        <li>{{ field }}: {{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+  <form method="POST" action="{{ url_for('main.checkout') }}">
+    {{ form.hidden_tag() }}
+
+    <div class="row">
+      <div class="col-md-6">
+        <h5>Personal Information</h5>
+        <hr>
+        {{ wtf.form_field(form.fullName, autocomplete="name") }}
+        {{ wtf.form_field(form.email, autocomplete="email") }}
+        {{ wtf.form_field(form.phone, autocomplete="tel") }}
+        {{ wtf.form_field(form.address, autocomplete="address-line1") }}
+        {{ wtf.form_field(form.country, autocomplete="country") }}
+        {{ wtf.form_field(form.city, autocomplete="address-level2") }}
+        {{ wtf.form_field(form.suburb, autocomplete="address-level3") }}
+      </div>
+
+      <div class="col-md-6">
+        <h5>Service Booking Details</h5>
+        <hr>
+        {% for service in services %}
+          <div class="card mb-4">
+            <div class="card-body">
+              <h6 class="mb-2">{{ service.name }} <span class="badge badge-gold">${{ "%.2f"|format(service.price) }}</span></h6>
+              <div class="form-group">
+                <label for="pickup_address_{{service.id}}">Pickup Address for this service</label>
+                <input type="text"
+                      class="form-control"
+                      id="pickup_address_{{service.id}}"
+                      name="pickup_address_{{service.id}}"
+                      autocomplete="pickup street-address"
+                      required>
+              </div>
+              <div class="form-group">
+                <label for="dropoff_address_{{service.id}}">Dropoff Address for this service</label>
+                <input type="text"
+                      class="form-control"
+                      id="dropoff_address_{{service.id}}"
+                      name="dropoff_address_{{service.id}}"
+                      autocomplete="off"
+                      required>
+              </div>
+              <div class="form-group">
+                <label for="booking_date_{{service.id}}">Pickup Date and Time</label>
+                <input type="datetime-local"
+                      class="form-control"
+                      id="booking_date_{{service.id}}"
+                      name="booking_date_{{service.id}}"
+                      min="{{ now.strftime('%Y-%m-%dT%H:%M') }}"
+                      required>
+              </div>
+              <div class="form-group">
+                <label for="notes_{{service.id}}">Additional Notes (optional)</label>
+                <textarea class="form-control"
+                          id="notes_{{service.id}}"
+                          name="notes_{{service.id}}"
+                          rows="2"
+                          autocomplete="off"></textarea>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      {{ wtf.form_field(form.submit, class="btn btn-gold-inverse") }}
+    </div>
+  </form>
+</section>
+{% endblock %}

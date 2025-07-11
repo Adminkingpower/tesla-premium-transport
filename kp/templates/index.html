@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="jumbotron text-white banner" style="background-image: url('{{ url_for('static', filename='img/jumbotron.png') }}')">
+  <div class="header-content text-lg-right text-center">
+    <h1 class="display-4 font-weight-bold">Experience Premium Tesla Rides</h1>
+    <p class="lead">New clients get <strong>25% off</strong> their first ride.<br> Request our executive service now.</p>
+    <a href="#services" class="btn btn-gold-inverse btn-lg mt-3">Our Services</a>
+  </div>
+</header>
+<section class="container my-5" id="services">
+  <div class="text-center">
+    <h2 class="mb-4">Travel to Surrounding Cities With Total Peace of Mind</h2>
+    <p>
+      With King Power Au, your ride to the Gold Coast, Sunshine Coast, Ipswich, Toowoomba, or any city near Brisbane is guaranteed to be premium.
+      We ensure punctual pickups, luxury interiors, and professional chauffeurs to make your business or leisure trip stress-free and memorable.
+    </p>
+  </div>
+</section>
+<div class="container my-5" id="services">
+  <div class="row">
+    {% for category in categories %}
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <img src="{{ url_for('static', filename='img/' ~ category.image) }}" class="card-img-top" alt="{{ category.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ category.name }}</h5>
+          <p class="card-text">{{ category.description }}</p>
+          <a href="{{ url_for('main.' + category.endpoint) }}" class="btn btn-gold-inverse">See Options</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
