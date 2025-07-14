@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -9,16 +10,14 @@ def create_app():
     app.debug = True
     app.secret_key = 'BetterSecretNeeded123'
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kingpower.sqlite'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///kingpower.sqlite')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     Bootstrap(app)
     db.init_app(app)
 
-    # Importa modelos aquí
     from . import models
 
-    # 👇 CREA LAS TABLAS AL INICIAR LA APP
     with app.app_context():
         db.create_all()
 
